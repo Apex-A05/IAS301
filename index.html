@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>:: CYBERSEC_REVIEWER // root@terminal</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="scanlines"></div>
+<div class="noise"></div>
+
+<!-- ===================== BOOT OVERLAY ===================== -->
+<div id="boot" class="boot">
+  <pre id="bootText" class="boot-text"></pre>
+</div>
+
+<!-- ===================== APP SHELL ===================== -->
+<div id="app" class="app hidden">
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-glyph">▣</span>
+      <div class="brand-text">
+        <span class="brand-title">CYBERSEC<span class="accent">_</span>REVIEWER</span>
+        <span class="brand-sub">comprehensive // 12-module dataset</span>
+      </div>
+    </div>
+    <div class="topbar-status">
+      <span class="dot online"></span>
+      <span id="clock" class="clock">00:00:00</span>
+    </div>
+  </header>
+
+  <nav class="tabs" id="tabs">
+    <button class="tab active" data-view="home">
+      <span class="tab-key">01</span> HOME
+    </button>
+    <button class="tab" data-view="reviewer">
+      <span class="tab-key">02</span> REVIEWER
+    </button>
+    <button class="tab" data-view="flashcards">
+      <span class="tab-key">03</span> FLASHCARDS
+    </button>
+    <button class="tab" data-view="quiz">
+      <span class="tab-key">04</span> QUIZ
+    </button>
+  </nav>
+
+  <main class="content">
+
+    <!-- ============ HOME ============ -->
+    <section class="view active" id="view-home">
+      <div class="hero">
+        <div class="hero-left">
+          <p class="kicker">$ whoami_security_analyst</p>
+          <h1 class="hero-title">Master the<br><span class="accent">Cybersecurity</span> domain.</h1>
+          <p class="hero-desc">12 modules. Hundreds of terms. One reviewer built for the night before the exam —
+            read the notes, drill the flashcards, then stress-test yourself with a randomized quiz.</p>
+          <div class="hero-actions">
+            <button class="btn btn-primary" data-goto="quiz">▶ Start a quiz round</button>
+            <button class="btn btn-ghost" data-goto="reviewer">Open the reviewer</button>
+          </div>
+        </div>
+        <div class="hero-right">
+          <div class="term-window">
+            <div class="term-bar"><span></span><span></span><span></span><span class="term-bar-title">status.log</span></div>
+            <div class="term-body" id="homeStats">
+              <p>> loading dataset...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="module-grid" id="moduleGrid"></div>
+    </section>
+
+    <!-- ============ REVIEWER ============ -->
+    <section class="view" id="view-reviewer">
+      <div class="reviewer-layout">
+        <aside class="reviewer-nav" id="reviewerNav"></aside>
+        <div class="reviewer-pane" id="reviewerPane"></div>
+      </div>
+    </section>
+
+    <!-- ============ FLASHCARDS ============ -->
+    <section class="view" id="view-flashcards">
+      <div class="fc-toolbar">
+        <div class="fc-filter">
+          <label for="fcModuleSelect">module</label>
+          <select id="fcModuleSelect"></select>
+        </div>
+        <div class="fc-progress">
+          <span id="fcIndex">1</span> / <span id="fcTotal">0</span>
+        </div>
+        <button class="btn btn-ghost btn-sm" id="fcShuffle">⤮ shuffle</button>
+      </div>
+
+      <div class="fc-stage">
+        <button class="fc-nav fc-prev" id="fcPrev" aria-label="previous">‹</button>
+
+        <div class="fc-card-wrap" id="fcCardWrap">
+          <div class="fc-card" id="fcCard">
+            <div class="fc-face fc-front">
+              <span class="fc-tag" id="fcTagFront">module</span>
+              <p class="fc-term" id="fcTerm">Term</p>
+              <span class="fc-hint">tap / click to flip</span>
+            </div>
+            <div class="fc-face fc-back">
+              <span class="fc-tag" id="fcTagBack">definition</span>
+              <p class="fc-def" id="fcDef">Definition</p>
+              <span class="fc-hint">tap / click to flip back</span>
+            </div>
+          </div>
+        </div>
+
+        <button class="fc-nav fc-next" id="fcNext" aria-label="next">›</button>
+      </div>
+
+      <div class="fc-track-wrap">
+        <div class="fc-track" id="fcTrack"></div>
+      </div>
+    </section>
+
+    <!-- ============ QUIZ ============ -->
+    <section class="view" id="view-quiz">
+
+      <!-- setup -->
+      <div class="quiz-stage" id="quizSetup">
+        <div class="quiz-setup-card">
+          <p class="kicker">$ ./run_quiz --random</p>
+          <h2 class="setup-title">Configure this round</h2>
+
+          <div class="setup-row">
+            <span class="setup-label">Number of items</span>
+            <div class="seg" id="qLenSeg">
+              <button class="seg-btn active" data-len="20">20</button>
+              <button class="seg-btn" data-len="25">25</button>
+              <button class="seg-btn" data-len="30">30</button>
+            </div>
+          </div>
+
+          <div class="setup-row">
+            <span class="setup-label">Question types</span>
+            <div class="seg" id="qTypeSeg">
+              <button class="seg-btn active" data-type="all">Mixed</button>
+              <button class="seg-btn" data-type="mc">Multiple Choice</button>
+              <button class="seg-btn" data-type="id">Identification</button>
+            </div>
+          </div>
+
+          <div class="setup-row">
+            <span class="setup-label">Timer per item</span>
+            <div class="seg" id="qTimerSeg">
+              <button class="seg-btn" data-timer="0">Off</button>
+              <button class="seg-btn active" data-timer="30">30s</button>
+              <button class="seg-btn" data-timer="45">45s</button>
+            </div>
+          </div>
+
+          <button class="btn btn-primary btn-wide" id="qStartBtn">▶ Initialize round</button>
+          <p class="setup-foot">Each round pulls a fresh random set from the full bank — no two rounds are alike.</p>
+        </div>
+      </div>
+
+      <!-- active quiz -->
+      <div class="quiz-stage hidden" id="quizActive">
+        <div class="quiz-hud">
+          <div class="quiz-progress-track">
+            <div class="quiz-progress-fill" id="quizProgressFill"></div>
+          </div>
+          <div class="quiz-hud-row">
+            <span id="quizCounter">Item 1 / 20</span>
+            <span id="quizTimer" class="quiz-timer">30</span>
+            <span id="quizScoreLive">Score: 0</span>
+          </div>
+        </div>
+
+        <div class="quiz-card" id="quizCard">
+          <span class="quiz-type-badge" id="quizTypeBadge">MULTIPLE CHOICE</span>
+          <p class="quiz-question" id="quizQuestion">Question text goes here?</p>
+
+          <div class="quiz-choices" id="quizChoices"></div>
+
+          <div class="quiz-id-input hidden" id="quizIdInput">
+            <input type="text" id="quizIdField" autocomplete="off" spellcheck="false" placeholder="type your answer...">
+            <button class="btn btn-primary" id="quizIdSubmit">Submit</button>
+          </div>
+
+          <div class="quiz-feedback hidden" id="quizFeedback"></div>
+        </div>
+
+        <div class="quiz-footer-actions">
+          <button class="btn btn-ghost" id="quizQuit">✕ End round</button>
+          <button class="btn btn-primary hidden" id="quizNext">Next ▶</button>
+        </div>
+      </div>
+
+      <!-- results -->
+      <div class="quiz-stage hidden" id="quizResults">
+        <div class="results-card">
+          <p class="kicker">$ round complete</p>
+          <h2 class="setup-title" id="resultsTitle">Round Summary</h2>
+
+          <div class="results-ring-wrap">
+            <svg viewBox="0 0 120 120" class="results-ring">
+              <circle cx="60" cy="60" r="52" class="ring-bg"/>
+              <circle cx="60" cy="60" r="52" class="ring-fg" id="ringFg"/>
+            </svg>
+            <div class="results-ring-text">
+              <span id="resultsPercent">0%</span>
+              <span class="results-ring-label">score</span>
+            </div>
+          </div>
+
+          <div class="results-stats">
+            <div class="rstat"><span class="rstat-num" id="statCorrect">0</span><span class="rstat-label">correct</span></div>
+            <div class="rstat"><span class="rstat-num" id="statWrong">0</span><span class="rstat-label">missed</span></div>
+            <div class="rstat"><span class="rstat-num" id="statTotal">0</span><span class="rstat-label">items</span></div>
+          </div>
+
+          <p class="results-verdict" id="resultsVerdict"></p>
+
+          <div class="results-review" id="resultsReview"></div>
+
+          <div class="hero-actions" style="justify-content:center; margin-top:24px;">
+            <button class="btn btn-primary" id="quizAgain">▶ New random round</button>
+            <button class="btn btn-ghost" id="quizHome">Back to home</button>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <span>CCGC // Cybersecurity Reviewer Console</span>
+    <span class="footer-dim">built for studying, not for production. good luck.</span>
+  </footer>
+</div>
+
+<script src="data.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
